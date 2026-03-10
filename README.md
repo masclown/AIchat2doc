@@ -1,11 +1,12 @@
 # Gemini2Obsidian
 
 ## 项目简介
-这是一个快速将Gemini某一段对话直接转化为md文件并保存在Obsidian的库里浏览器插件。
+这是一个快速将Gemini某一段对话直接转化为md文件并保存在Obsidian的库里/下载到本地的浏览器插件。
 
 ### 核心特性
 - 快速将 Gemini 的对话页面（包括模型回复的大段文本、标题、代码块等）转换为 Markdown 格式。
 - 点击按钮直接跳转到 Obsidian 并新建一条带时间戳的笔记。
+- 点击按钮直接下载md文件到本地。
 - 支持转换 Markdown 表格，且在表格前保留换行。
 - 自动清理提取内容中的干扰元素（如“导出到 Google 表格”或“复制”等附属按钮文本）。
 
@@ -32,11 +33,14 @@
 ### 使用方式
 1. 在 Gemini 页面，找到想要保存的对话。
 2. 点击对话块左下角的“导出到 Obsidian”按钮。
-3. 插件会自动将对话内容转换为 Markdown 格式，并跳转到 Obsidian。
+3. 插件会自动将对话内容转换为 Markdown 格式，并跳转到 Obsidian。如果跳转时弹窗，请勾选“始终允许 gemini.google.com 在关联的应用中打开此类链接”，并点击“打开”。
+![浏览器授权跳转](assets/images/浏览器授权：跳转到Obsidian.png)
 4. 在 Obsidian 中，插件会自动创建一个新的笔记，并将内容粘贴进笔记中。
+5. 如果点击对话块左下角的“Download as Markdown”按钮，插件会自动将对话内容转换为 Markdown 格式，并下载到本地。
 
 ### 注意
 1. 笔记保存位置与Obsidian“新建笔记存放位置”的设置有关，请在Obsidian的“设置”->“文件与链接”->“新建笔记存放位置”中设置。
+![Obsidian笔记存放设置](assets/images/Obsidian笔记存放设置.png)
 2. 对话中的图片在导出时，会在笔记中保存为链接，如需要将图片保存在本地，请使用Obsidian其他插件实现。
 
 # Star History

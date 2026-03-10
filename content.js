@@ -1,6 +1,6 @@
 /**
  * @fileoverview 主模块
- * @version 0.0.9
+ * @version 0.0.10
  * @author masclown
  * @license GPL-3.0
  * @copyright 2026 unibox
@@ -148,7 +148,7 @@ function getMarkdownContent(actionBar) {
             parts[i] = parts[i].replace(/\n{2,}(?=[ \t]*[#|])/g, '\n\n');
         }
     }
-    
+
     return parts.join('```');
 }
 
@@ -232,14 +232,20 @@ function injectDownloadButton(lastBtn, actionBar) {
     lastBtn.insertAdjacentElement('afterend', btn);
 }
 
+function getFormattedFileName() {
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}-Gemini对话记录`;
+}
+
 function saveToObsidian(content) {
     /**
      * @description 将内容发送至 Obsidian 协议打开新建笔记
      * @param {string} content - 需要被保存为笔记的 Markdown 字符串
      */
-    const fileName = `Gemini_${new Date().getTime()}`;
+    const fileName = getFormattedFileName();
     const encodedContent = encodeURIComponent(content);
-    const url = `obsidian://new?vault=${VAULT_NAME}&name=${fileName}&content=${encodedContent}`;
+    const url = `obsidian://new?vault=${VAULT_NAME}&name=${encodeURIComponent(fileName)}&content=${encodedContent}`;
 
     window.location.href = url;
 }
@@ -249,18 +255,18 @@ function downloadMarkdown(content) {
      * @description 将 Markdown 内容即刻下载为本地的 .md 文件
      * @param {string} content - 需要被下载的 Markdown 字符串
      */
-    const fileName = `Gemini_${new Date().getTime()}.md`;
+    const fileName = `${getFormattedFileName()}.md`;
     const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
     const url = URL.createObjectURL(blob);
-    
+
     const a = document.createElement('a');
     a.style.display = 'none';
     a.href = url;
     a.download = fileName;
-    
+
     document.body.appendChild(a);
     a.click();
-    
+
     setTimeout(() => {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
