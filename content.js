@@ -1,6 +1,6 @@
 /**
  * @fileoverview 主模块
- * @version 0.0.7
+ * @version 0.0.8
  * @author masclown
  * @license MIT
  * @copyright 2026 unibox
@@ -115,13 +115,38 @@ function injectSaveButton(copyBtn, actionBar) {
                 p.parentNode.replaceChild(span, p);
             });
 
+            // 问题4修复：清除表格后的“导出到 Google 表格”等无用元素
+            const elementsToCheck = clone.querySelectorAll('*');
+            elementsToCheck.forEach(el => {
+                const text = el.textContent.trim();
+                if ((text === '导出到 Google 表格' || text === 'Export to Sheets') && el.parentElement) {
+                    let current = el;
+                    while (current && current !== clone && current.textContent.trim() === text) {
+                        const parent = current.parentElement;
+                        current.remove();
+                        current = parent;
+                    }
+                }
+            });
+
             // --- DOM 清洗与重组结束 ---
 
-            // 问题1修复：此时 turndownService 已支持表格解析
             let markdownContent = turndownService.turndown(clone.innerHTML);
 
-            // 最终的文本清理：将三个及以上的连续换行压缩为两个
-            markdownContent = markdownContent.replace(/\n{3,}/g, '\n\n');
+            // 最终的文本清理：去除多余空行，仅保留标题前的空行
+            // 通过 '```' 切割字符串，确保不对代码块内部的换行进行误操作
+            const parts = markdownContent.split('```');
+            for (let i = 0; i < parts.length; i++) {
+                // 偶数索引部分是外部正文，奇数索引部分是代码块内部
+                if (i % 2 === 0) {
+                    // 1. 将连续的2个及以上换行，如果紧接着的下一行不是标题(#)和表格(|)，则压缩为0个换行
+                    parts[i] = parts[i].replace(/\n{1,}(?![ \t]*[#|])/g, '\n');
+
+                    // 2. 如果紧接着的下一行是标题(#)或表格(|)，则统一保留1个换行（即专门留出1个空行分隔标题或表格）
+                    parts[i] = parts[i].replace(/\n{2,}(?=[ \t]*[#|])/g, '\n\n');
+                }
+            }
+            markdownContent = parts.join('```');
 
             saveToObsidian(markdownContent);
         } else {
