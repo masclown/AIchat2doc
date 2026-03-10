@@ -2,15 +2,16 @@
 const VAULT_NAME = "Obsidian";  // 更改为Obsidian库的名称
 
 function init() {
-    // 持续监听：处理后续通过对话新生成的元素，以及被其他插件重写的 DOM
     const observer = new MutationObserver(() => {
-        // 放宽匹配规则，抓取所有可能的操作栏容器
-        const actionBars = document.querySelectorAll('[class*="buttons-container"]');
+        // 精准定位：只寻找原生对话下方的“复制”按钮组件
+        const copyButtons = document.querySelectorAll('copy-button');
 
-        actionBars.forEach(actionBar => {
-            // 核心修改：检查容器内是否真实存在我们的按钮
-            // 如果不存在（初始状态，或者被 Voyager 覆盖抹除了），则执行注入
-            if (!actionBar.querySelector('.obsidian-icon-btn')) {
+        copyButtons.forEach(copyBtn => {
+            // 获取复制按钮所在的父容器（即真正的操作栏）
+            const actionBar = copyBtn.parentElement;
+
+            // 核心修改：使用专属的 data-test-id 进行唯一性检查
+            if (actionBar && !actionBar.querySelector('[data-test-id="gemini-to-obsidian-btn"]')) {
                 injectSaveButton(actionBar);
             }
         });
@@ -21,6 +22,8 @@ function init() {
 
 function injectSaveButton(actionBar) {
     const btn = document.createElement('button');
+    // 添加类似 Voyager 的自定义属性，用于精准识别
+    btn.setAttribute('data-test-id', 'gemini-to-obsidian-btn');
     btn.className = "obsidian-icon-btn";
     btn.title = "Save to Obsidian";
 
@@ -46,7 +49,7 @@ function injectSaveButton(actionBar) {
         }
     };
 
-    // 直接追加到操作栏的最末端（会在 Voyager 的按钮之后）
+    // 追加到操作栏的末端
     actionBar.appendChild(btn);
 }
 
@@ -58,5 +61,4 @@ function saveToObsidian(content) {
     window.location.href = url;
 }
 
-// 启动脚本
 init();
