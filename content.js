@@ -1,5 +1,20 @@
+/**
+ * @fileoverview 主模块
+ * @version 0.0.6
+ * @author masclown
+ * @license MIT
+ * @copyright 2026 unibox
+ */
+
+
 // 核心配置：Obsidian 库名称
-const VAULT_NAME = "Obsidian";  // 更改为Obsidian库的名称
+const VAULT_NAME = "Obsidian";  // 更改为Obsidian库的名称，默认是"YourVaultName"
+
+// 初始化 Turndown 实例，并配置常用的 Markdown 风格
+const turndownService = new TurndownService({
+    headingStyle: 'atx', // 使用 # 作为标题前缀
+    codeBlockStyle: 'fenced' // 使用 ``` 作为代码块标记
+});
 
 function init() {
     let timeout = null;
@@ -23,7 +38,6 @@ function init() {
 }
 
 function injectSaveButton(copyBtn, actionBar) {
-    // 1. 恢复克隆外层组件，以保留原生的 CSS 占位和 Flex 布局
     const btn = copyBtn.cloneNode(true);
 
     btn.removeAttribute('id');
@@ -34,16 +48,11 @@ function injectSaveButton(copyBtn, actionBar) {
     interactive.title = "Save to Obsidian";
     interactive.removeAttribute('aria-describedby');
 
-    // 2. 核心修复：只修改属性，清空 textContent，杜绝双图标渲染
     const icon = btn.querySelector('mat-icon');
     if (icon) {
         const iconName = 'book';
-
-        // 修改原生调用的属性
         icon.setAttribute('fonticon', iconName);
         icon.setAttribute('data-mat-icon-name', iconName);
-
-        // 必须清空内部文本，防止 Ligature 连字机制二次渲染
         icon.textContent = '';
     }
 
@@ -62,7 +71,12 @@ function injectSaveButton(copyBtn, actionBar) {
         }
 
         if (contentEl) {
-            saveToObsidian(contentEl.innerText);
+            // 核心修改：使用 Turndown 将 HTML 转换为 Markdown
+            // 使用 cloneNode 避免在预处理时修改页面上的真实 DOM
+            const clone = contentEl.cloneNode(true);
+            const markdownContent = turndownService.turndown(clone.innerHTML);
+
+            saveToObsidian(markdownContent);
         } else {
             console.error("未能定位到对应的文本内容节点。");
         }
