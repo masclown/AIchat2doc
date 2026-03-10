@@ -5,52 +5,50 @@ function init() {
     let timeout = null;
 
     const observer = new MutationObserver(() => {
-        // 防抖机制：延迟执行，避免高频触发导致页面卡顿
         clearTimeout(timeout);
         timeout = setTimeout(() => {
-            // 精准定位所有原生“复制”按钮组件
             const copyButtons = document.querySelectorAll('copy-button');
 
             copyButtons.forEach(copyBtn => {
                 const actionBar = copyBtn.parentElement;
 
-                // 检查操作栏是否存在，并且我们自己的按钮还没被添加过
                 if (actionBar && !actionBar.querySelector('[data-test-id="gemini-to-obsidian-btn"]')) {
                     injectSaveButton(copyBtn, actionBar);
                 }
             });
-        }, 300); // 300毫秒内没有新的DOM变化才执行
+        }, 300);
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
 }
 
 function injectSaveButton(copyBtn, actionBar) {
-    const btn = document.createElement('button');
+    // 1. 恢复克隆外层组件，以保留原生的 CSS 占位和 Flex 布局
+    const btn = copyBtn.cloneNode(true);
+
+    btn.removeAttribute('id');
     btn.setAttribute('data-test-id', 'gemini-to-obsidian-btn');
 
-    // 完全复刻 Gemini 原生操作按钮的 CSS 类名
-    btn.className = "mdc-button mat-mdc-button-base mat-mdc-tooltip-trigger icon-button mat-mdc-button mat-unthemed";
-    btn.title = "Save to Obsidian";
-    btn.style.minWidth = "48px"; // 适配原生按钮宽度
-    btn.style.padding = "0";
+    const interactive = btn.matches('button') ? btn : (btn.querySelector('button, [role="button"]') || btn);
+    interactive.setAttribute('aria-label', "Save to Obsidian");
+    interactive.title = "Save to Obsidian";
+    interactive.removeAttribute('aria-describedby');
 
-    // 复刻原生内部结构，包裹 SVG 图标
-    btn.innerHTML = `
-        <span class="mat-mdc-button-persistent-ripple mdc-button__ripple"></span>
-        <mat-icon role="img" class="mat-icon notranslate gds-icon-l google-symbols mat-ligature-font mat-icon-no-color" aria-hidden="true" style="display: flex; justify-content: center; align-items: center;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                <polyline points="7 3 7 8 15 8"></polyline>
-            </svg>
-        </mat-icon>
-        <span class="mdc-button__label"></span>
-        <span class="mat-focus-indicator"></span>
-        <span class="mat-mdc-button-touch-target"></span>
-    `;
+    // 2. 核心修复：只修改属性，清空 textContent，杜绝双图标渲染
+    const icon = btn.querySelector('mat-icon');
+    if (icon) {
+        const iconName = 'book';
 
-    btn.onclick = (e) => {
+        // 修改原生调用的属性
+        icon.setAttribute('fonticon', iconName);
+        icon.setAttribute('data-mat-icon-name', iconName);
+
+        // 必须清空内部文本，防止 Ligature 连字机制二次渲染
+        icon.textContent = '';
+    }
+
+    interactive.onclick = (e) => {
+        e.preventDefault();
         e.stopPropagation();
 
         let currentEl = actionBar;
@@ -70,7 +68,6 @@ function injectSaveButton(copyBtn, actionBar) {
         }
     };
 
-    // 核心定位：将新按钮直接插入到“复制”按钮的后面（右侧）
     copyBtn.insertAdjacentElement('afterend', btn);
 }
 
