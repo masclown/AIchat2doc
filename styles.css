@@ -1,0 +1,30 @@
+/* 基础按钮样式 */
+.obsidian-save-btn {
+    background-color: #7c3aed; /* Obsidian 风格的紫色 */
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 14px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: inherit;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 鼠标悬停效果 */
+.obsidian-save-btn:hover {
+    background-color: #6d28d9;
+}
+
+/* 鼠标点击效果 */
+.obsidian-save-btn:active {
+    background-color: #5b21b6;
+    transform: scale(0.98);
+}
