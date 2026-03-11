@@ -1,11 +1,11 @@
 /**
  * @fileoverview 主模块
- * @version 0.0.10
+ * @version 0.0.11
  * @author masclown
  * @license GPL-3.0
  * @copyright 2026 unibox
  * 
- * Gemini2Obsidian - Gemini对话导出为Obsidian笔记
+ * AIchat2doc - AI对话导出为Obsidian笔记
  * Copyright (C) 2026 masclown
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
  */
 
 // 核心配置：Obsidian 库名称
-const VAULT_NAME = "Obsidian";  // 更改为Obsidian库的名称，默认是"YourVaultName"
+const VAULT_NAME = "Obsidian";  // 更改为Obsidian库的名称
 
 // 1. 初始化 Turndown 实例
 const turndownService = new TurndownService({

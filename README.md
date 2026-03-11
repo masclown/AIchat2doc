@@ -1,4 +1,4 @@
-# Gemini2Obsidian
+# AIchat2doc
 
 ## 项目简介
 这是一个快速将Gemini某一段对话直接转化为md文件并保存在Obsidian的库里/下载到本地的浏览器插件。
@@ -24,19 +24,24 @@
 - `turndown-plugin-gfm.js`: Turndown 的插件，专门用于处理 GitHub Flavored Markdown 语法（如表格支持）。
 
 ### 安装方式
-1. 打开 Chrome 浏览器，在地址栏输入 `chrome://extensions` 并回车，进入扩展程序管理页面。
-2. 确保右上角的“开发者模式”已开启。
-3. 点击左上角的“加载已解压的扩展程序”按钮。
-4. 选择 Gemini2Obsidian 文件夹。
-5. 插件安装成功后，Ctrl+F5 刷新 Gemini 页面即可看到效果。
+1. 下载最近版本，解压缩。
+2. 打开 Chrome 浏览器，在地址栏输入 `chrome://extensions` 并回车，进入扩展程序管理页面。
+    （如果是 Edge 浏览器，在地址栏输入`edge://extensions/`并回车，进入扩展程序管理界面。）
+3. 确保右上角的“开发者模式”已开启。
+4. 点击左上角的“加载已解压的扩展程序”按钮。
+5. 选择 Gemini2Obsidian 文件夹。
+6. 插件安装成功后，Ctrl+F5 刷新 Gemini 页面即可看到效果。
+7. 使用导出到Obsidian前，注意查看Obsidian库的名称，如果需要更改，请打开`content.js`搜索`VAULT_NAME`并修改。
+![修改Obsidian库名称](assets/images/修改Obsidian库名称.png)
 
 ### 使用方式
 1. 在 Gemini 页面，找到想要保存的对话。
-2. 点击对话块左下角的“导出到 Obsidian”按钮。
+2. 点击对话块左下角的“Save to Obsidian”按钮。
 3. 插件会自动将对话内容转换为 Markdown 格式，并跳转到 Obsidian。如果跳转时弹窗，请勾选“始终允许 gemini.google.com 在关联的应用中打开此类链接”，并点击“打开”。
 ![浏览器授权跳转](assets/images/浏览器授权：跳转到Obsidian.png)
 4. 在 Obsidian 中，插件会自动创建一个新的笔记，并将内容粘贴进笔记中。
 5. 如果点击对话块左下角的“Download as Markdown”按钮，插件会自动将对话内容转换为 Markdown 格式，并下载到本地。
+![功能按钮位置](assets/images/功能按钮位置.png)
 
 ### 注意
 1. 笔记保存位置与Obsidian“新建笔记存放位置”的设置有关，请在Obsidian的“设置”->“文件与链接”->“新建笔记存放位置”中设置。
