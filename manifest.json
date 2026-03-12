@@ -1,14 +1,15 @@
 {
   "manifest_version": 3,
   "name": "AIchat2doc",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "permissions": [
     "activeTab"
   ],
   "content_scripts": [
     {
       "matches": [
-        "https://gemini.google.com/*"
+        "https://gemini.google.com/*",
+        "https://chat.deepseek.com/*"
       ],
       "js": [
         "turndown.js",
