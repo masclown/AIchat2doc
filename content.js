@@ -1,6 +1,6 @@
 /**
  * @fileoverview 主模块 - 适配多平台
- * @version 0.0.12
+ * @version 0.0.13
  * @author masclown
  * @license GPL-3.0
  * @copyright 2026 unibox
@@ -327,6 +327,70 @@ const PLATFORMS = {
                 p.parentNode.replaceChild(span, p);
             });
         }
+    },
+    doubao: {
+        name: 'Doubao',
+        match: () => window.location.hostname.includes('doubao.com'),
+        getCopyButtons: () => document.querySelectorAll('button[data-testid="message_action_copy"]'),
+        getActionBar: (btn) => btn.parentElement,
+        hasInjected: (actionBar) => actionBar.querySelector('[data-test-id="doubao-to-obsidian-btn"]'),
+        inject: (copyBtn, actionBar, saveHandler, downloadHandler) => {
+            const createBtn = (originalBtn, title, svgPath, id) => {
+                const btn = originalBtn.cloneNode(true);
+                btn.removeAttribute('id');
+                btn.setAttribute('data-test-id', id);
+                btn.title = title;
+                btn.setAttribute('aria-label', title);
+                btn.style.marginLeft = '4px';
+
+                const svg = btn.querySelector('svg');
+                if (svg) {
+                    svg.setAttribute('viewBox', '0 0 16 16');
+                    svg.innerHTML = `<path d="${svgPath}" fill="currentColor"></path>`;
+                }
+
+                btn.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (id === 'doubao-to-obsidian-btn') saveHandler(actionBar);
+                    else downloadHandler(actionBar);
+                };
+                return btn;
+            };
+
+            const obSvgPath = "M2 2v12h10V2H2zm1 1h8v10H3V3zm1 2v1h6V5H4zm0 2v1h6V7H4zm0 2v1h4V9H4z";
+            const dlSvgPath = "M8 12l-4-4h2.5V3h3v5H12L8 12zM3 13v2h10v-2H3z";
+
+            const obBtn = createBtn(copyBtn, "Save to Obsidian", obSvgPath, 'doubao-to-obsidian-btn');
+            const dlBtn = createBtn(copyBtn, "Download as Markdown", dlSvgPath, 'doubao-download-md-btn');
+
+            copyBtn.insertAdjacentElement('afterend', dlBtn);
+            copyBtn.insertAdjacentElement('afterend', obBtn);
+        },
+        getContentNode: (actionBar) => {
+            let currentEl = actionBar;
+            while (currentEl && currentEl !== document.body) {
+                const parent = currentEl.parentElement;
+                if (!parent) break;
+                const contentNodes = Array.from(parent.querySelectorAll('[data-testid="message_text_content"]'));
+                if (contentNodes.length > 0) {
+                    return contentNodes[contentNodes.length - 1]; // 返回最近一级的文本内容节点
+                }
+                currentEl = parent;
+            }
+            return null;
+        },
+        cleanDOM: (clone) => {
+            clone.querySelectorAll('.table-header-qH9Ajf').forEach(header => header.remove());
+            clone.querySelectorAll('.header-wrapper-Mbk8s6').forEach(header => header.remove());
+            clone.querySelectorAll('.md-box-line-break').forEach(br => br.remove());
+            // 处理列表中内嵌的块级元素
+            clone.querySelectorAll('li div.paragraph-element, li p').forEach(p => {
+                const span = document.createElement('span');
+                span.innerHTML = p.innerHTML;
+                p.parentNode.replaceChild(span, p);
+            });
+        }
     }
 };
 
@@ -386,7 +450,7 @@ function getMarkdownContent(actionBar) {
     });
 
     // 修复列表项与代码块粘连的问题：强制代码块另起一行并消除代码块被列表错误附加的缩进
-    markdownContent = markdownContent.replace(/([^\n]*?)[ \t]*```([a-zA-Z0-9_+#-]*)\n([\s\S]*?)\n([ \t]*)```/g, (match, before, lang, code, indent) => {
+    markdownContent = markdownContent.replace(/([^\n]*?)[ \t]*```([^\s]*)\n([\s\S]*?)\n([ \t]*)```/g, (match, before, lang, code, indent) => {
         let cleanBefore = before.trimEnd();
         let prefix = cleanBefore ? cleanBefore + '\n\n' : '';
 

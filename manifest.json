@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AIchat2doc",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "permissions": [
     "activeTab"
   ],
@@ -11,7 +11,8 @@
         "https://gemini.google.com/*",
         "https://chat.deepseek.com/*",
         "https://kimi.moonshot.cn/*",
-        "https://*.kimi.com/*"
+        "https://*.kimi.com/*",
+        "https://www.doubao.com/*"
       ],
       "js": [
         "turndown.js",
