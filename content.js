@@ -1,6 +1,6 @@
 /**
  * @fileoverview 主模块 - 适配多平台
- * @version 0.0.15
+ * @version 0.0.17
  * @author masclown
  * @license GPL-3.0
  * @copyright 2026 unibox
@@ -479,6 +479,101 @@ const PLATFORMS = {
                 p.parentNode.replaceChild(span, p);
             });
         }
+    },
+    minimax: {
+        name: 'Minimax',
+        match: () => window.location.hostname.includes('agent.minimaxi.com'),
+        getCopyButtons: () => {
+            const paths = Array.from(document.querySelectorAll('svg path[d^="M6.34943"]'));
+            return paths.map(path => path.closest('.cursor-pointer')).filter(Boolean);
+        },
+        getActionBar: (btn) => btn.parentElement,
+        hasInjected: (actionBar) => actionBar.querySelector('[data-test-id="minimax-to-obsidian-btn"]'),
+        inject: (copyBtn, actionBar, saveHandler, downloadHandler) => {
+            const createBtn = (originalBtn, title, svgPath, id) => {
+                const btn = originalBtn.cloneNode(true);
+                btn.removeAttribute('id');
+                btn.setAttribute('data-test-id', id);
+                btn.title = title;
+                btn.setAttribute('aria-label', title);
+                btn.style.marginLeft = '4px';
+
+                const svg = btn.querySelector('svg');
+                if (svg) {
+                    svg.setAttribute('viewBox', '0 0 16 16');
+                    svg.innerHTML = `<path d="${svgPath}" fill="currentColor"></path>`;
+                }
+
+                btn.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (id === 'minimax-to-obsidian-btn') saveHandler(actionBar);
+                    else downloadHandler(actionBar);
+                };
+                return btn;
+            };
+
+            const obSvgPath = "M2 2v12h10V2H2zm1 1h8v10H3V3zm1 2v1h6V5H4zm0 2v1h6V7H4zm0 2v1h4V9H4z";
+            const dlSvgPath = "M8 12l-4-4h2.5V3h3v5H12L8 12zM3 13v2h10v-2H3z";
+
+            const obBtn = createBtn(copyBtn, "Save to Obsidian", obSvgPath, 'minimax-to-obsidian-btn');
+            const dlBtn = createBtn(copyBtn, "Download as Markdown", dlSvgPath, 'minimax-download-md-btn');
+
+            copyBtn.insertAdjacentElement('afterend', dlBtn);
+            copyBtn.insertAdjacentElement('afterend', obBtn);
+        },
+        getContentNode: (actionBar) => {
+            let currentEl = actionBar;
+            while (currentEl && currentEl !== document.body) {
+                const parent = currentEl.parentElement;
+                if (!parent) break;
+                const mdNodes = Array.from(parent.querySelectorAll('.matrix-markdown'));
+                if (mdNodes.length > 0) {
+                    return mdNodes[mdNodes.length - 1];
+                }
+                currentEl = parent;
+            }
+            return null;
+        },
+        cleanDOM: (clone) => {
+            clone.querySelectorAll('.think-container').forEach(node => node.remove());
+
+            const wrappers = clone.querySelectorAll('.code-block-wrapper');
+            wrappers.forEach(wrapper => {
+                const codeNode = wrapper.querySelector('code');
+                const langSpan = wrapper.querySelector('.code-toolbar span');
+                let lang = '';
+                if (langSpan && langSpan.textContent) {
+                    lang = langSpan.textContent.trim().toLowerCase();
+                }
+
+                if (codeNode) {
+                    let outerPre = wrapper.closest('pre');
+                    if (!outerPre) outerPre = wrapper;
+
+                    const cleanCode = document.createElement('code');
+                    if (lang) {
+                        cleanCode.className = `language-${lang}`;
+                    } else if (codeNode.className && codeNode.className.includes('language-')) {
+                        cleanCode.className = codeNode.className;
+                    }
+                    cleanCode.textContent = codeNode.textContent;
+
+                    const newPre = document.createElement('pre');
+                    newPre.appendChild(cleanCode);
+
+                    if (outerPre.parentNode) {
+                        outerPre.parentNode.replaceChild(newPre, outerPre);
+                    }
+                }
+            });
+
+            clone.querySelectorAll('li p').forEach(p => {
+                const span = document.createElement('span');
+                span.innerHTML = p.innerHTML;
+                p.parentNode.replaceChild(span, p);
+            });
+        }
     }
 };
 
@@ -551,6 +646,44 @@ function getMarkdownContent(actionBar) {
         return prefix + '```' + lang + '\n' + cleanCode + '\n```';
     });
 
+    // 修复 YouTube 视频链接卡片格式（Gemini 特有）
+    // Turndown 将含图片和文字的 <a> 标签错误转换为:
+    //   [\n\n![](logo)\n\nTitle\n\nAuthor\n\n](url)\n\n![](thumbnail)\n\n![](logo)
+    // 目标格式: ![maxresdefault.jpg](thumbnail)\n[Title Author](url)
+
+    // 步骤1: 修复被 Turndown 错误包裹的 YouTube 富卡片链接块
+    // 匹配 [ 开头到 ](youtube-url) 结尾的完整结构，内部可含换行和图片
+    markdownContent = markdownContent.replace(
+        /\[([\s\S]*?)\]\((https?:\/\/(?:www\.)?(?:youtube\.com\/watch[^)]*|youtu\.be\/[^)]*?))\)/g,
+        (match, innerContent, url) => {
+            // 只处理包含 gstatic/ytimg 图片的富卡片，普通 YouTube 链接原样返回
+            if (!innerContent.includes('gstatic.com') && !innerContent.includes('ytimg.com')) {
+                return match;
+            }
+            // 提取 ytimg 缩略图（如存在于卡片内部）
+            const thumbMatch = innerContent.match(/!\[[^\]]*\]\((https:\/\/i\.ytimg\.com\/vi\/[^)]+)\)/);
+            // 提取纯文本标题
+            const cleanText = innerContent
+                .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
+                .replace(/\s+/g, ' ')
+                .trim() || 'YouTube Video';
+
+            if (thumbMatch) {
+                const thumbUrl = thumbMatch[1];
+                const fileName = thumbUrl.split('/').pop().split('?')[0] || 'maxresdefault.jpg';
+                return `![${fileName}](${thumbUrl})\n[${cleanText}](${url})`;
+            }
+            return `[${cleanText}](${url})`;
+        }
+    );
+
+    // 步骤2: 移除原始 DOM 中游离的、无 alt 的 ytimg 缩略图（空 alt，如 ![](...ytimg...)）
+    // 步骤1已将其整合到链接之前，这里只清除未被整合的空 alt 版本
+    markdownContent = markdownContent.replace(/\n*!\[\]\(https:\/\/i\.ytimg\.com\/vi\/[^)]+\)\n*/g, '\n');
+
+    // 步骤3: 移除独立的 YouTube logo 图片引用（无 alt）
+    markdownContent = markdownContent.replace(/!\[\]\(https:\/\/www\.gstatic\.com\/images\/branding\/productlogos\/youtube\/[^)]+\)\n*/g, '');
+
     // 限制最大连续空行为两个换行符
     markdownContent = markdownContent.replace(/\n{3,}/g, '\n\n');
 
@@ -586,11 +719,39 @@ function downloadActionHandler(actionBar) {
     }
 }
 
+/**
+ * 将 Markdown 内容保存到 Obsidian 笔记
+ * - 使用隐藏 <a> 标签点击代替 window.location.href，避免 SPA 路由拦截
+ * - 当 URL 过长时（超过 30000 字符），改用剪贴板传递内容，防止格式丢失
+ */
 function saveToObsidian(content) {
     const fileName = getFormattedFileName();
     const encodedContent = encodeURIComponent(content);
-    const url = `obsidian://new?vault=${VAULT_NAME}&name=${encodeURIComponent(fileName)}&content=${encodedContent}`;
-    window.location.href = url;
+    const fullUrl = `obsidian://new?vault=${VAULT_NAME}&name=${encodeURIComponent(fileName)}&content=${encodedContent}`;
+
+    const openObsidianUrl = (url) => {
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => document.body.removeChild(a), 200);
+    };
+
+    if (fullUrl.length > 30000) {
+        // URL 过长时，先复制内容到剪贴板，再创建带提示文字的笔记
+        navigator.clipboard.writeText(content).then(() => {
+            const placeholder = encodeURIComponent('> 内容已复制到剪贴板，请使用 Ctrl+V 粘贴替换本文。\n');
+            const shortUrl = `obsidian://new?vault=${VAULT_NAME}&name=${encodeURIComponent(fileName)}&content=${placeholder}`;
+            openObsidianUrl(shortUrl);
+            alert('内容较长，已复制到剪贴板。\n请在 Obsidian 中全选并粘贴替换。');
+        }).catch(() => {
+            // 剪贴板不可用时，仍尝试完整 URL
+            openObsidianUrl(fullUrl);
+        });
+    } else {
+        openObsidianUrl(fullUrl);
+    }
 }
 
 function downloadMarkdown(content) {

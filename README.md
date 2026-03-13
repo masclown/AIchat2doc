@@ -1,10 +1,16 @@
 # AIchat2doc
 
 ## 项目简介
-这是一个快速将Gemini/DeepSeek/Kimi/Doubao/Qianwen某一段对话直接转化为md文件并保存在Obsidian的库里/下载到本地的浏览器插件。
+这是一个快速将AI聊天界面的某一段对话直接转化为md文件并保存到Obsidian的库里/下载到本地的浏览器插件。
 
 ### 核心特性
-- 快速将 Gemini/DeepSeek/Kimi/Doubao/Qianwen 的对话页面（包括模型回复的大段文本、标题、代码块等）转换为 Markdown 格式。
+- 快速将 AI聊天 的对话页面（包括模型回复的大段文本、标题、代码块等）转换为 Markdown 格式。支持：
+    - Gemini
+    - DeepSeek
+    - Kimi
+    - Doubao
+    - Qianwen
+    - Minimax
 - 点击按钮直接跳转到 Obsidian 并新建一条带时间戳的笔记。
 - 点击按钮直接下载md文件到本地。
 - 支持转换 Markdown 表格，且在表格前保留换行。
@@ -29,13 +35,13 @@
     （如果是 Edge 浏览器，在地址栏输入`edge://extensions/`并回车，进入扩展程序管理界面。）
 3. 确保右上角的“开发者模式”已开启。
 4. 点击左上角的“加载已解压的扩展程序”按钮。
-5. 选择 Gemini2Obsidian 文件夹。
-6. 插件安装成功后，Ctrl+F5 刷新 Gemini 页面即可看到效果。
+5. 选择 AIchat2doc 文件夹。
+6. 插件安装成功后，Ctrl+F5 刷新 AI 聊天页面即可看到效果。
 7. 使用导出到Obsidian前，注意查看Obsidian库的名称，如果需要更改，请打开`content.js`搜索`VAULT_NAME`并修改。
 ![修改Obsidian库名称](assets/images/修改Obsidian库名称.png)
 
 ### 使用方式
-1. 在 Gemini 页面，找到想要保存的对话。
+1. 在 AI 聊天页面，找到想要保存的对话。
 2. 点击对话块左下角的“Save to Obsidian”按钮。
 3. 插件会自动将对话内容转换为 Markdown 格式，并跳转到 Obsidian。如果跳转时弹窗，请勾选“始终允许 gemini.google.com 在关联的应用中打开此类链接”，并点击“打开”。
 ![浏览器授权跳转](assets/images/浏览器授权：跳转到Obsidian.png)
