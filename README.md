@@ -1,10 +1,10 @@
 # AIchat2doc
 
 ## 项目简介
-这是一个快速将Gemini/DeepSeek某一段对话直接转化为md文件并保存在Obsidian的库里/下载到本地的浏览器插件。
+这是一个快速将Gemini/DeepSeek/Kimi某一段对话直接转化为md文件并保存在Obsidian的库里/下载到本地的浏览器插件。
 
 ### 核心特性
-- 快速将 Gemini/DeepSeek 的对话页面（包括模型回复的大段文本、标题、代码块等）转换为 Markdown 格式。
+- 快速将 Gemini/DeepSeek/Kimi 的对话页面（包括模型回复的大段文本、标题、代码块等）转换为 Markdown 格式。
 - 点击按钮直接跳转到 Obsidian 并新建一条带时间戳的笔记。
 - 点击按钮直接下载md文件到本地。
 - 支持转换 Markdown 表格，且在表格前保留换行。

@@ -9,7 +9,9 @@
     {
       "matches": [
         "https://gemini.google.com/*",
-        "https://chat.deepseek.com/*"
+        "https://chat.deepseek.com/*",
+        "https://kimi.moonshot.cn/*",
+        "https://*.kimi.com/*"
       ],
       "js": [
         "turndown.js",

@@ -243,6 +243,90 @@ const PLATFORMS = {
                 }
             });
         }
+    },
+    kimi: {
+        name: 'Kimi',
+        match: () => window.location.hostname.includes('kimi.moonshot.cn') || window.location.hostname.includes('kimi.com'),
+        getCopyButtons: () => {
+            const btns = Array.from(document.querySelectorAll('.segment-assistant-actions .icon-button'));
+            return btns.filter(btn => {
+                const svg = btn.querySelector('svg');
+                return svg && svg.getAttribute('name') === 'Copy';
+            });
+        },
+        getActionBar: (btn) => btn.parentElement,
+        hasInjected: (actionBar) => actionBar.querySelector('[data-test-id="kimi-to-obsidian-btn"]'),
+        inject: (copyBtn, actionBar, saveHandler, downloadHandler) => {
+            const createBtn = (originalBtn, title, svgName, svgPath, id) => {
+                const btn = originalBtn.cloneNode(true);
+                btn.removeAttribute('id');
+                btn.setAttribute('data-test-id', id);
+                btn.title = title;
+                btn.setAttribute('aria-label', title);
+                btn.style.marginLeft = '4px';
+
+                const svg = btn.querySelector('svg');
+                if (svg) {
+                    svg.setAttribute('name', svgName);
+                    svg.setAttribute('viewBox', '0 0 16 16');
+                    svg.innerHTML = `<path d="${svgPath}" fill="currentColor"></path>`;
+                }
+
+                btn.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (id === 'kimi-to-obsidian-btn') saveHandler(actionBar);
+                    else downloadHandler(actionBar);
+                };
+                return btn;
+            };
+
+            const obSvgPath = "M2 2v12h10V2H2zm1 1h8v10H3V3zm1 2v1h6V5H4zm0 2v1h6V7H4zm0 2v1h4V9H4z";
+            const dlSvgPath = "M8 12l-4-4h2.5V3h3v5H12L8 12zM3 13v2h10v-2H3z";
+
+            const obBtn = createBtn(copyBtn, "Save to Obsidian", 'Obsidian', obSvgPath, 'kimi-to-obsidian-btn');
+            const dlBtn = createBtn(copyBtn, "Download as Markdown", 'DownloadMD', dlSvgPath, 'kimi-download-md-btn');
+
+            copyBtn.insertAdjacentElement('afterend', dlBtn);
+            copyBtn.insertAdjacentElement('afterend', obBtn);
+        },
+        getContentNode: (actionBar) => {
+            let currentEl = actionBar;
+            while (currentEl && currentEl !== document.body) {
+                const parent = currentEl.parentElement;
+                if (!parent) break;
+                const mdNodes = Array.from(parent.querySelectorAll('.markdown'));
+                if (mdNodes.length > 0) {
+                    return mdNodes[mdNodes.length - 1]; // 返回最近一级的 markdown 内容节点
+                }
+                currentEl = parent;
+            }
+            return null;
+        },
+        /**
+         * 针对 Kimi 特定的 DOM 清理：
+         * 1. 移除自定义的代码块标题区 .segment-code-header
+         * 2. 移除一些无用的按钮 .simple-button
+         * 3. 移除无用的空 div，防止出现过多排版换行
+         * 4. 修复 Kimi 中列表中嵌套的 div.paragraph 导致的多余换行
+         * 5. 移除表格上方的操作栏（包含“表格”字样和按钮）
+         */
+        cleanDOM: (clone) => {
+            clone.querySelectorAll('.segment-code-header').forEach(header => header.remove());
+            clone.querySelectorAll('.simple-button').forEach(btn => btn.remove());
+            clone.querySelectorAll('.table-actions').forEach(action => action.remove());
+            clone.querySelectorAll('div').forEach(div => {
+                if (div.children.length === 0 && div.textContent.trim() === '') {
+                    div.remove();
+                }
+            });
+            // 彻底去除列表内的块级元素
+            clone.querySelectorAll('li div.paragraph, li p').forEach(p => {
+                const span = document.createElement('span');
+                span.innerHTML = p.innerHTML;
+                p.parentNode.replaceChild(span, p);
+            });
+        }
     }
 };
 
@@ -317,6 +401,10 @@ function getMarkdownContent(actionBar) {
 
     // 限制最大连续空行为两个换行符
     markdownContent = markdownContent.replace(/\n{3,}/g, '\n\n');
+
+    // 压缩列表前以及列表项之间的空行，使其表现更紧凑（匹配 `- `, `* `, `+ `, `1. ` 等）
+    markdownContent = markdownContent.replace(/\n{2,}([ \t]*[-*+]\s+)/g, '\n$1');
+    markdownContent = markdownContent.replace(/\n{2,}([ \t]*\d+\.\s+)/g, '\n$1');
 
     return markdownContent;
 }
