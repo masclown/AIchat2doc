@@ -1,6 +1,6 @@
 /**
  * @fileoverview 主模块 - 适配多平台
- * @version 0.0.13
+ * @version 0.0.15
  * @author masclown
  * @license GPL-3.0
  * @copyright 2026 unibox
@@ -386,6 +386,94 @@ const PLATFORMS = {
             clone.querySelectorAll('.md-box-line-break').forEach(br => br.remove());
             // 处理列表中内嵌的块级元素
             clone.querySelectorAll('li div.paragraph-element, li p').forEach(p => {
+                const span = document.createElement('span');
+                span.innerHTML = p.innerHTML;
+                p.parentNode.replaceChild(span, p);
+            });
+        }
+    },
+    qianwen: {
+        name: 'Qianwen',
+        match: () => window.location.hostname.includes('qianwen.com') || window.location.hostname.includes('tongyi.aliyun.com'),
+        getCopyButtons: () => Array.from(document.querySelectorAll('span[data-icon-type="qwpcicon-copy"]')),
+        getActionBar: (span) => span.closest('div[class*="leftArea"]') || span.closest('.flex.gap-4') || span.parentElement.parentElement.parentElement,
+        hasInjected: (actionBar) => actionBar.querySelector('[data-test-id="qianwen-to-obsidian-btn"]'),
+        inject: (copyIconSpan, actionBar, saveHandler, downloadHandler) => {
+            const obSvgPath = "M2 2v12h10V2H2zm1 1h8v10H3V3zm1 2v1h6V5H4zm0 2v1h6V7H4zm0 2v1h4V9H4z";
+            const dlSvgPath = "M8 12l-4-4h2.5V3h3v5H12L8 12zM3 13v2h10v-2H3z";
+
+            const createBtn = (title, svgPath, id) => {
+                const div = document.createElement('div');
+                const btn = document.createElement('button');
+                btn.className = "relative inline-flex items-center justify-center gap-1 whitespace-nowrap align-middle font-normal transition-[opacity,shadow,transform] duration-200 focus-visible:outline-none ring-none hover:bg-tag py-1.5 text-14 cursor-pointer px-1 size-6 rounded-6 text-secondary";
+                btn.setAttribute('data-test-id', id);
+                btn.title = title;
+                btn.setAttribute('aria-label', title);
+                btn.type = 'button';
+
+                btn.innerHTML = `<span data-role="icon" class="size-4" style="display: inline-flex; justify-content: center; align-items: center; text-align: center;"><svg viewBox="0 0 16 16" width="100%" height="100%" style="fill: currentcolor; overflow: hidden; cursor: pointer;"><path d="${svgPath}"></path></svg></span>`;
+
+                btn.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (id === 'qianwen-to-obsidian-btn') saveHandler(actionBar);
+                    else downloadHandler(actionBar);
+                };
+
+                div.appendChild(btn);
+                return div;
+            };
+
+            const obBtn = createBtn("Save to Obsidian", obSvgPath, 'qianwen-to-obsidian-btn');
+            const dlBtn = createBtn("Download as Markdown", dlSvgPath, 'qianwen-download-md-btn');
+
+            actionBar.appendChild(dlBtn);
+            actionBar.appendChild(obBtn);
+        },
+        getContentNode: (actionBar) => {
+            let currentEl = actionBar;
+            while (currentEl && currentEl !== document.body) {
+                const parent = currentEl.parentElement;
+                if (!parent) break;
+                const mdNodes = Array.from(parent.querySelectorAll('.tongyi-markdown'));
+                if (mdNodes.length > 0) {
+                    return mdNodes[mdNodes.length - 1];
+                }
+                currentEl = parent;
+            }
+            return null;
+        },
+        cleanDOM: (clone) => {
+            // 移除代码行号
+            clone.querySelectorAll('.react-syntax-highlighter-line-number').forEach(node => node.remove());
+
+            const outerPres = clone.querySelectorAll('pre');
+            outerPres.forEach(pre => {
+                const codeNode = pre.querySelector('code');
+                const headerSpan = pre.querySelector('div.bg-primary span');
+
+                let lang = '';
+                if (headerSpan && headerSpan.textContent) {
+                    lang = headerSpan.textContent.trim().toLowerCase();
+                } else {
+                    const langMatch = pre.className.match(/language-(\S+)/) || (codeNode && codeNode.className.match(/language-(\S+)/));
+                    if (langMatch) lang = langMatch[1];
+                }
+
+                if (codeNode) {
+                    const cleanCode = document.createElement('code');
+                    if (lang) {
+                        cleanCode.className = `language-${lang}`;
+                    }
+                    cleanCode.textContent = codeNode.textContent;
+
+                    pre.innerHTML = '';
+                    pre.appendChild(cleanCode);
+                }
+            });
+
+            // 处理列表中内嵌的段落
+            clone.querySelectorAll('li p').forEach(p => {
                 const span = document.createElement('span');
                 span.innerHTML = p.innerHTML;
                 p.parentNode.replaceChild(span, p);
