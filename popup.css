@@ -1,0 +1,179 @@
+/**
+ * @fileoverview 弹出设置界面样式
+ * @version 0.0.18
+ * @author masclown
+ * @license GPL-3.0
+ * @copyright 2026 unibox
+ *
+ * AIchat2doc - AI对话导出为Obsidian笔记
+ * Copyright (C) 2026 masclown
+ */
+
+/* ========== 基础重置 ========== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #1a1a2e;
+  color: #e0e0e0;
+  min-width: 320px;
+}
+
+/* ========== 容器布局 ========== */
+.popup-container {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ========== 头部标题 ========== */
+.popup-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(124, 58, 237, 0.3);
+}
+
+.header-icon {
+  color: #a78bfa;
+  flex-shrink: 0;
+}
+
+.popup-header h1 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #e8e0ff;
+  letter-spacing: 0.5px;
+}
+
+/* ========== 设置项 ========== */
+.setting-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.setting-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #c4b5fd;
+}
+
+.label-icon {
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+.setting-input {
+  width: 100%;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(124, 58, 237, 0.35);
+  border-radius: 8px;
+  color: #f0f0f0;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.setting-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.setting-input:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.setting-hint {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  padding-left: 2px;
+}
+
+/* ========== 按钮 ========== */
+.button-group {
+  display: flex;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.save-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+}
+
+.save-btn:hover {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+  transform: translateY(-1px);
+}
+
+.save-btn:active {
+  background: linear-gradient(135deg, #6d28d9, #5b21b6);
+  transform: scale(0.98) translateY(0);
+  box-shadow: 0 1px 4px rgba(124, 58, 237, 0.3);
+}
+
+/* ========== 状态消息 ========== */
+.status-msg {
+  text-align: center;
+  font-size: 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: opacity 0.3s ease;
+}
+
+.status-msg.hidden {
+  display: none;
+}
+
+.status-msg.success {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+.status-msg.error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+/* ========== 底部版本信息 ========== */
+.popup-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.version-info {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.25);
+}

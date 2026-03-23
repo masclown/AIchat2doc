@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIchat2doc 设置</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <div class="popup-header">
+      <svg class="header-icon" viewBox="0 0 24 24" width="20" height="20">
+        <path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1115.6 12 3.61 3.61 0 0112 15.6z" fill="currentColor"/>
+      </svg>
+      <h1>AIchat2doc 设置</h1>
+    </div>
+
+    <div class="setting-group">
+      <label class="setting-label" for="vaultName">
+        <svg class="label-icon" viewBox="0 0 16 16" width="14" height="14">
+          <path d="M2 2v12h10V2H2zm1 1h8v10H3V3zm1 2v1h6V5H4zm0 2v1h6V7H4zm0 2v1h4V9H4z" fill="currentColor"/>
+        </svg>
+        Obsidian 库名称
+      </label>
+      <input type="text" id="vaultName" class="setting-input" placeholder="例如：Obsidian" spellcheck="false">
+      <p class="setting-hint">对应 Obsidian 中打开的 Vault 名称</p>
+    </div>
+
+    <div class="button-group">
+      <button id="saveBtn" class="save-btn">
+        <svg viewBox="0 0 16 16" width="14" height="14">
+          <path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z" fill="currentColor"/>
+        </svg>
+        保存设置
+      </button>
+    </div>
+
+    <div id="statusMsg" class="status-msg hidden"></div>
+
+    <div class="popup-footer">
+      <span class="version-info">v0.0.18</span>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 /**
  * @fileoverview 主模块 - 适配多平台
- * @version 0.0.17
+ * @version 0.0.18
  * @author masclown
  * @license GPL-3.0
  * @copyright 2026 unibox
@@ -9,7 +9,20 @@
  * Copyright (C) 2026 masclown
  */
 
-const VAULT_NAME = "Obsidian";
+/** 默认 Obsidian 库名称 */
+const DEFAULT_VAULT_NAME = "Obsidian";
+
+/**
+ * 从 chrome.storage.local 异步读取 Obsidian 库名称
+ * @returns {Promise<string>} Vault 名称
+ */
+function getVaultName() {
+    return new Promise((resolve) => {
+        chrome.storage.local.get({ vaultName: DEFAULT_VAULT_NAME }, (result) => {
+            resolve(result.vaultName || DEFAULT_VAULT_NAME);
+        });
+    });
+}
 
 const turndownService = new TurndownService({
     headingStyle: 'atx',
@@ -701,10 +714,10 @@ function getFormattedFileName() {
     return `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}-${platformName}对话记录`;
 }
 
-function saveActionHandler(actionBar) {
+async function saveActionHandler(actionBar) {
     const markdownContent = getMarkdownContent(actionBar);
     if (markdownContent) {
-        saveToObsidian(markdownContent);
+        await saveToObsidian(markdownContent);
     } else {
         console.error("未能定位到对应的文本内容节点。");
     }
@@ -724,10 +737,11 @@ function downloadActionHandler(actionBar) {
  * - 使用隐藏 <a> 标签点击代替 window.location.href，避免 SPA 路由拦截
  * - 当 URL 过长时（超过 30000 字符），改用剪贴板传递内容，防止格式丢失
  */
-function saveToObsidian(content) {
+async function saveToObsidian(content) {
+    const vaultName = await getVaultName();
     const fileName = getFormattedFileName();
     const encodedContent = encodeURIComponent(content);
-    const fullUrl = `obsidian://new?vault=${VAULT_NAME}&name=${encodeURIComponent(fileName)}&content=${encodedContent}`;
+    const fullUrl = `obsidian://new?vault=${vaultName}&name=${encodeURIComponent(fileName)}&content=${encodedContent}`;
 
     const openObsidianUrl = (url) => {
         const a = document.createElement('a');
@@ -742,7 +756,7 @@ function saveToObsidian(content) {
         // URL 过长时，先复制内容到剪贴板，再创建带提示文字的笔记
         navigator.clipboard.writeText(content).then(() => {
             const placeholder = encodeURIComponent('> 内容已复制到剪贴板，请使用 Ctrl+V 粘贴替换本文。\n');
-            const shortUrl = `obsidian://new?vault=${VAULT_NAME}&name=${encodeURIComponent(fileName)}&content=${placeholder}`;
+            const shortUrl = `obsidian://new?vault=${vaultName}&name=${encodeURIComponent(fileName)}&content=${placeholder}`;
             openObsidianUrl(shortUrl);
             alert('内容较长，已复制到剪贴板。\n请在 Obsidian 中全选并粘贴替换。');
         }).catch(() => {
