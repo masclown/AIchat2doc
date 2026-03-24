@@ -1,3 +1,4 @@
 .devdoc/ # 开发文档
 releases/ # 发布版本
 .dev_require/ # 开发需求资料
+.description/ # 浏览器应用商店描述文件
