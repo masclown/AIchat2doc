@@ -1,0 +1,1 @@
+The activeTab permission is required to read the DOM structure of the currently active AI chat page when the user explicitly clicks the export buttons. This allows the extension to extract the conversation HTML and securely convert it to Markdown format locally. The permission is only utilized upon active user interaction.
