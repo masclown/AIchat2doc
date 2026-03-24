@@ -1,0 +1,134 @@
+{
+  "extName": {
+    "message": "AIchat2doc"
+  },
+  "extTitle": {
+    "message": "AIchat2doc Settings"
+  },
+  "extDescription": {
+    "message": "Export AI conversations to Markdown documents and save to Obsidian"
+  },
+  "settingsTitle": {
+    "message": "AIchat2doc Settings"
+  },
+  "vaultNameLabel": {
+    "message": "Obsidian Vault Name"
+  },
+  "vaultNamePlaceholder": {
+    "message": "e.g.: Obsidian"
+  },
+  "vaultNameHint": {
+    "message": "Corresponds to the Vault name opened in Obsidian"
+  },
+  "fileNameSection": {
+    "message": "Filename Settings"
+  },
+  "fileNameModeLabel": {
+    "message": "Naming Mode"
+  },
+  "modeCombined": {
+    "message": "Combined (set each part separately)"
+  },
+  "modeTemplate": {
+    "message": "Template (fully customizable)"
+  },
+  "timestampLabel": {
+    "message": "Timestamp Format"
+  },
+  "ts14": {
+    "message": "14-digit (YYYYMMDDHHmmss)"
+  },
+  "ts12": {
+    "message": "12-digit (YYYYMMDDHHmm) — default"
+  },
+  "ts8": {
+    "message": "8-digit (YYYYMMDD)"
+  },
+  "tsNone": {
+    "message": "No timestamp"
+  },
+  "separatorLabel": {
+    "message": "Separator"
+  },
+  "sepDash": {
+    "message": "Dash (-) — default"
+  },
+  "sepUnderscore": {
+    "message": "Underscore (_)"
+  },
+  "sepSpace": {
+    "message": "Space"
+  },
+  "sepNone": {
+    "message": "None"
+  },
+  "sourceLabel": {
+    "message": "Source Name"
+  },
+  "sourceDefault": {
+    "message": "Default (AI platform name + \"Chat Log\")"
+  },
+  "sourceCustom": {
+    "message": "Custom"
+  },
+  "customSourcePlaceholder": {
+    "message": "e.g.: My Notes"
+  },
+  "customSourceHint": {
+    "message": "Replace default source names like \"Gemini Chat Log\""
+  },
+  "templateLabel": {
+    "message": "Filename Template"
+  },
+  "templatePlaceholder": {
+    "message": "{YYYY}{MM}{DD}{HH}{mm}-{source}ChatLog"
+  },
+  "templateHint": {
+    "message": "Supported variables: {YYYY} {MM} {DD} {HH} {mm} {ss} {source}"
+  },
+  "previewLabel": {
+    "message": "Preview:"
+  },
+  "saveBtn": {
+    "message": "Save Settings"
+  },
+  "vaultNameRequired": {
+    "message": "Obsidian vault name cannot be empty"
+  },
+  "saveFailed": {
+    "message": "Save failed: $ERROR$",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "storage error"
+      }
+    }
+  },
+  "saveSuccess": {
+    "message": "✓ Settings saved"
+  },
+  "customNamePlaceholder": {
+    "message": "Custom Name"
+  },
+  "unnamed": {
+    "message": "Unnamed"
+  },
+  "chatLog": {
+    "message": "Chat Log"
+  },
+  "saveToObsidian": {
+    "message": "Save to Obsidian"
+  },
+  "downloadAsMd": {
+    "message": "Download as Markdown"
+  },
+  "clipboardNotice": {
+    "message": "> Content copied to clipboard. Please use Ctrl+V to paste and replace this text.\n"
+  },
+  "contentTooLong": {
+    "message": "Content is too long and has been copied to clipboard.\nPlease select all and paste in Obsidian."
+  },
+  "contentNodeError": {
+    "message": "Unable to locate the corresponding text content node."
+  }
+}

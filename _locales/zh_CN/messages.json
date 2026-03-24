@@ -1,0 +1,134 @@
+{
+  "extName": {
+    "message": "AIchat2doc"
+  },
+  "extTitle": {
+    "message": "AIchat2doc 设置"
+  },
+  "extDescription": {
+    "message": "将 AI 对话导出为 Markdown 文档并保存到 Obsidian"
+  },
+  "settingsTitle": {
+    "message": "AIchat2doc 设置"
+  },
+  "vaultNameLabel": {
+    "message": "Obsidian 库名称"
+  },
+  "vaultNamePlaceholder": {
+    "message": "例如：Obsidian"
+  },
+  "vaultNameHint": {
+    "message": "对应 Obsidian 中打开的 Vault 名称"
+  },
+  "fileNameSection": {
+    "message": "文件名设置"
+  },
+  "fileNameModeLabel": {
+    "message": "命名模式"
+  },
+  "modeCombined": {
+    "message": "组合模式（分别设置各部分）"
+  },
+  "modeTemplate": {
+    "message": "模板模式（完全自定义）"
+  },
+  "timestampLabel": {
+    "message": "时间戳格式"
+  },
+  "ts14": {
+    "message": "14 位（YYYYMMDDHHmmss）"
+  },
+  "ts12": {
+    "message": "12 位（YYYYMMDDHHmm）— 默认"
+  },
+  "ts8": {
+    "message": "8 位（YYYYMMDD）"
+  },
+  "tsNone": {
+    "message": "不使用时间戳"
+  },
+  "separatorLabel": {
+    "message": "连词符"
+  },
+  "sepDash": {
+    "message": "横杠（-）— 默认"
+  },
+  "sepUnderscore": {
+    "message": "下划线（_）"
+  },
+  "sepSpace": {
+    "message": "空格"
+  },
+  "sepNone": {
+    "message": "无连词符"
+  },
+  "sourceLabel": {
+    "message": "来源名称"
+  },
+  "sourceDefault": {
+    "message": "默认（AI 平台名称 + \"对话记录\"）"
+  },
+  "sourceCustom": {
+    "message": "自定义"
+  },
+  "customSourcePlaceholder": {
+    "message": "例如：我的笔记"
+  },
+  "customSourceHint": {
+    "message": "替换默认的\"Gemini对话记录\"等来源名称"
+  },
+  "templateLabel": {
+    "message": "文件名模板"
+  },
+  "templatePlaceholder": {
+    "message": "{YYYY}{MM}{DD}{HH}{mm}-{source}对话记录"
+  },
+  "templateHint": {
+    "message": "支持变量：{YYYY} {MM} {DD} {HH} {mm} {ss} {source}"
+  },
+  "previewLabel": {
+    "message": "预览："
+  },
+  "saveBtn": {
+    "message": "保存设置"
+  },
+  "vaultNameRequired": {
+    "message": "Obsidian 库名称不能为空"
+  },
+  "saveFailed": {
+    "message": "保存失败：$ERROR$",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "存储错误"
+      }
+    }
+  },
+  "saveSuccess": {
+    "message": "✓ 设置已保存"
+  },
+  "customNamePlaceholder": {
+    "message": "自定义名称"
+  },
+  "unnamed": {
+    "message": "未命名"
+  },
+  "chatLog": {
+    "message": "对话记录"
+  },
+  "saveToObsidian": {
+    "message": "保存到 Obsidian"
+  },
+  "downloadAsMd": {
+    "message": "下载为 Markdown"
+  },
+  "clipboardNotice": {
+    "message": "> 内容已复制到剪贴板，请使用 Ctrl+V 粘贴替换本文。\n"
+  },
+  "contentTooLong": {
+    "message": "内容较长，已复制到剪贴板。\n请在 Obsidian 中全选并粘贴替换。"
+  },
+  "contentNodeError": {
+    "message": "未能定位到对应的文本内容节点。"
+  }
+}

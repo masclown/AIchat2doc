@@ -1,6 +1,6 @@
 /**
  * @fileoverview 主模块 - 适配多平台
- * @version 0.0.19
+ * @version 0.0.20
  * @author masclown
  * @license GPL-3.0
  * @copyright 2026 unibox
@@ -17,7 +17,7 @@ const DEFAULT_SETTINGS = {
     separator: '-',
     sourceMode: 'default',
     customSource: '',
-    fileNameTemplate: '{YYYY}{MM}{DD}{HH}{mm}-{source}对话记录'
+    fileNameTemplate: '{YYYY}{MM}{DD}{HH}{mm}-{source}' + chrome.i18n.getMessage('chatLog')
 };
 
 /**
@@ -87,8 +87,8 @@ const PLATFORMS = {
                 return btn;
             };
 
-            const obBtn = createBtn(copyBtn, "Save to Obsidian", 'book', 'gemini-to-obsidian-btn');
-            const dlBtn = createBtn(copyBtn, "Download as Markdown", 'download', 'gemini-download-md-btn');
+            const obBtn = createBtn(copyBtn, chrome.i18n.getMessage('saveToObsidian'), 'book', 'gemini-to-obsidian-btn');
+            const dlBtn = createBtn(copyBtn, chrome.i18n.getMessage('downloadAsMd'), 'download', 'gemini-download-md-btn');
 
             copyBtn.insertAdjacentElement('afterend', dlBtn);
             copyBtn.insertAdjacentElement('afterend', obBtn);
@@ -186,8 +186,8 @@ const PLATFORMS = {
             const obSvgPath = "M2 2v12h10V2H2zm1 1h8v10H3V3zm1 2v1h6V5H4zm0 2v1h6V7H4zm0 2v1h4V9H4z";
             const dlSvgPath = "M8 12l-4-4h2.5V3h3v5H12L8 12zM3 13v2h10v-2H3z";
 
-            const obBtn = createBtn(copyBtn, "Save to Obsidian", obSvgPath, 'ai-to-obsidian-btn');
-            const dlBtn = createBtn(copyBtn, "Download as Markdown", dlSvgPath, 'ai-download-md-btn');
+            const obBtn = createBtn(copyBtn, chrome.i18n.getMessage('saveToObsidian'), obSvgPath, 'ai-to-obsidian-btn');
+            const dlBtn = createBtn(copyBtn, chrome.i18n.getMessage('downloadAsMd'), dlSvgPath, 'ai-download-md-btn');
 
             copyBtn.insertAdjacentElement('afterend', dlBtn);
             copyBtn.insertAdjacentElement('afterend', obBtn);
@@ -305,8 +305,8 @@ const PLATFORMS = {
             const obSvgPath = "M2 2v12h10V2H2zm1 1h8v10H3V3zm1 2v1h6V5H4zm0 2v1h6V7H4zm0 2v1h4V9H4z";
             const dlSvgPath = "M8 12l-4-4h2.5V3h3v5H12L8 12zM3 13v2h10v-2H3z";
 
-            const obBtn = createBtn(copyBtn, "Save to Obsidian", 'Obsidian', obSvgPath, 'kimi-to-obsidian-btn');
-            const dlBtn = createBtn(copyBtn, "Download as Markdown", 'DownloadMD', dlSvgPath, 'kimi-download-md-btn');
+            const obBtn = createBtn(copyBtn, chrome.i18n.getMessage('saveToObsidian'), 'Obsidian', obSvgPath, 'kimi-to-obsidian-btn');
+            const dlBtn = createBtn(copyBtn, chrome.i18n.getMessage('downloadAsMd'), 'DownloadMD', dlSvgPath, 'kimi-download-md-btn');
 
             copyBtn.insertAdjacentElement('afterend', dlBtn);
             copyBtn.insertAdjacentElement('afterend', obBtn);
@@ -382,8 +382,8 @@ const PLATFORMS = {
             const obSvgPath = "M2 2v12h10V2H2zm1 1h8v10H3V3zm1 2v1h6V5H4zm0 2v1h6V7H4zm0 2v1h4V9H4z";
             const dlSvgPath = "M8 12l-4-4h2.5V3h3v5H12L8 12zM3 13v2h10v-2H3z";
 
-            const obBtn = createBtn(copyBtn, "Save to Obsidian", obSvgPath, 'doubao-to-obsidian-btn');
-            const dlBtn = createBtn(copyBtn, "Download as Markdown", dlSvgPath, 'doubao-download-md-btn');
+            const obBtn = createBtn(copyBtn, chrome.i18n.getMessage('saveToObsidian'), obSvgPath, 'doubao-to-obsidian-btn');
+            const dlBtn = createBtn(copyBtn, chrome.i18n.getMessage('downloadAsMd'), dlSvgPath, 'doubao-download-md-btn');
 
             copyBtn.insertAdjacentElement('afterend', dlBtn);
             copyBtn.insertAdjacentElement('afterend', obBtn);
@@ -445,8 +445,8 @@ const PLATFORMS = {
                 return div;
             };
 
-            const obBtn = createBtn("Save to Obsidian", obSvgPath, 'qianwen-to-obsidian-btn');
-            const dlBtn = createBtn("Download as Markdown", dlSvgPath, 'qianwen-download-md-btn');
+            const obBtn = createBtn(chrome.i18n.getMessage('saveToObsidian'), obSvgPath, 'qianwen-to-obsidian-btn');
+            const dlBtn = createBtn(chrome.i18n.getMessage('downloadAsMd'), dlSvgPath, 'qianwen-download-md-btn');
 
             actionBar.appendChild(dlBtn);
             actionBar.appendChild(obBtn);
@@ -537,8 +537,8 @@ const PLATFORMS = {
             const obSvgPath = "M2 2v12h10V2H2zm1 1h8v10H3V3zm1 2v1h6V5H4zm0 2v1h6V7H4zm0 2v1h4V9H4z";
             const dlSvgPath = "M8 12l-4-4h2.5V3h3v5H12L8 12zM3 13v2h10v-2H3z";
 
-            const obBtn = createBtn(copyBtn, "Save to Obsidian", obSvgPath, 'minimax-to-obsidian-btn');
-            const dlBtn = createBtn(copyBtn, "Download as Markdown", dlSvgPath, 'minimax-download-md-btn');
+            const obBtn = createBtn(copyBtn, chrome.i18n.getMessage('saveToObsidian'), obSvgPath, 'minimax-to-obsidian-btn');
+            const dlBtn = createBtn(copyBtn, chrome.i18n.getMessage('downloadAsMd'), dlSvgPath, 'minimax-download-md-btn');
 
             copyBtn.insertAdjacentElement('afterend', dlBtn);
             copyBtn.insertAdjacentElement('afterend', obBtn);
@@ -756,13 +756,13 @@ async function getFormattedFileName() {
     if (settings.sourceMode === 'custom' && settings.customSource) {
         source = settings.customSource;
     } else {
-        source = `${platformName}对话记录`;
+        source = `${platformName}${chrome.i18n.getMessage('chatLog')}`;
     }
 
     const sep = settings.separator !== undefined ? settings.separator : '-';
     if (timestamp && source) return `${timestamp}${sep}${source}`;
     if (timestamp) return timestamp;
-    return source || '未命名';
+    return source || chrome.i18n.getMessage('unnamed');
 }
 
 async function saveActionHandler(actionBar) {
@@ -770,7 +770,7 @@ async function saveActionHandler(actionBar) {
     if (markdownContent) {
         await saveToObsidian(markdownContent);
     } else {
-        console.error("未能定位到对应的文本内容节点。");
+        console.error(chrome.i18n.getMessage('contentNodeError'));
     }
 }
 
@@ -779,7 +779,7 @@ async function downloadActionHandler(actionBar) {
     if (markdownContent) {
         await downloadMarkdown(markdownContent);
     } else {
-        console.error("未能定位到对应的文本内容节点。");
+        console.error(chrome.i18n.getMessage('contentNodeError'));
     }
 }
 
@@ -807,10 +807,10 @@ async function saveToObsidian(content) {
     if (fullUrl.length > 30000) {
         // URL 过长时，先复制内容到剪贴板，再创建带提示文字的笔记
         navigator.clipboard.writeText(content).then(() => {
-            const placeholder = encodeURIComponent('> 内容已复制到剪贴板，请使用 Ctrl+V 粘贴替换本文。\n');
+            const placeholder = encodeURIComponent(chrome.i18n.getMessage('clipboardNotice'));
             const shortUrl = `obsidian://new?vault=${vaultName}&name=${encodeURIComponent(fileName)}&content=${placeholder}`;
             openObsidianUrl(shortUrl);
-            alert('内容较长，已复制到剪贴板。\n请在 Obsidian 中全选并粘贴替换。');
+            alert(chrome.i18n.getMessage('contentTooLong'));
         }).catch(() => {
             // 剪贴板不可用时，仍尝试完整 URL
             openObsidianUrl(fullUrl);

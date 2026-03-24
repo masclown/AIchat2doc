@@ -1,14 +1,15 @@
 {
   "manifest_version": 3,
-  "name": "AIchat2doc",
-  "version": "0.0.19",
+  "name": "__MSG_extName__",
+  "version": "0.0.20",
+  "default_locale": "zh_CN",
   "permissions": [
     "activeTab",
     "storage"
   ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "AIchat2doc 设置"
+    "default_title": "__MSG_extTitle__"
   },
   "content_scripts": [
     {

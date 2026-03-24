@@ -1,6 +1,7 @@
 /**
  * @fileoverview 弹出设置界面逻辑 - 加载/保存用户设置（含文件名自定义）
- * @version 0.0.19
+ * 支持 i18n 国际化，自动跟随浏览器语言
+ * @version 0.0.20
  * @author masclown
  * @license GPL-3.0
  * @copyright 2026 unibox
@@ -17,8 +18,33 @@ const DEFAULT_SETTINGS = {
   separator: '-',                 // '-' | '_' | ' ' | ''
   sourceMode: 'default',          // 'default' | 'custom'
   customSource: '',               // 自定义来源文本
-  fileNameTemplate: '{YYYY}{MM}{DD}{HH}{mm}-{source}对话记录'  // 模板字符串
+  fileNameTemplate: '{YYYY}{MM}{DD}{HH}{mm}-{source}' + chrome.i18n.getMessage('chatLog')
 };
+
+/**
+ * 应用 i18n 国际化翻译到页面所有带 data-i18n 属性的元素
+ * - data-i18n：替换元素的 textContent
+ * - data-i18n-placeholder：替换元素的 placeholder 属性
+ */
+function applyI18n() {
+  // 翻译 textContent
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const msg = chrome.i18n.getMessage(key);
+    if (msg) el.textContent = msg;
+  });
+
+  // 翻译 placeholder
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    const msg = chrome.i18n.getMessage(key);
+    if (msg) el.placeholder = msg;
+  });
+
+  // 翻译页面标题
+  const titleMsg = chrome.i18n.getMessage('settingsTitle');
+  if (titleMsg) document.title = titleMsg;
+}
 
 /**
  * 根据当前表单设置生成文件名预览字符串
@@ -60,14 +86,14 @@ function generatePreview() {
 
   let source = '';
   if (sourceMode === 'custom') {
-    source = document.getElementById('customSource').value.trim() || '自定义名称';
+    source = document.getElementById('customSource').value.trim() || chrome.i18n.getMessage('customNamePlaceholder');
   } else {
-    source = `${vars.source}对话记录`;
+    source = `${vars.source}${chrome.i18n.getMessage('chatLog')}`;
   }
 
   if (timestamp && source) return `${timestamp}${sep}${source}`;
   if (timestamp) return timestamp;
-  return source || '未命名';
+  return source || chrome.i18n.getMessage('unnamed');
 }
 
 /**
@@ -122,7 +148,7 @@ function saveSettings() {
   const vaultName = document.getElementById('vaultName').value.trim();
 
   if (!vaultName) {
-    showStatus('Obsidian 库名称不能为空', 'error');
+    showStatus(chrome.i18n.getMessage('vaultNameRequired'), 'error');
     return;
   }
 
@@ -138,9 +164,9 @@ function saveSettings() {
 
   chrome.storage.local.set(settings, () => {
     if (chrome.runtime.lastError) {
-      showStatus('保存失败：' + chrome.runtime.lastError.message, 'error');
+      showStatus(chrome.i18n.getMessage('saveFailed', [chrome.runtime.lastError.message]), 'error');
     } else {
-      showStatus('✓ 设置已保存', 'success');
+      showStatus(chrome.i18n.getMessage('saveSuccess'), 'success');
     }
   });
 }
@@ -163,8 +189,11 @@ function showStatus(message, type) {
 
 // ========== 事件绑定 ==========
 
-// 页面加载时读取设置
-document.addEventListener('DOMContentLoaded', loadSettings);
+// 页面加载时先应用 i18n 翻译，再读取设置
+document.addEventListener('DOMContentLoaded', () => {
+  applyI18n();
+  loadSettings();
+});
 
 // 保存按钮
 document.getElementById('saveBtn').addEventListener('click', saveSettings);
