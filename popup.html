@@ -15,6 +15,7 @@
       <h1>AIchat2doc 设置</h1>
     </div>
 
+    <!-- ===== Obsidian 库名称 ===== -->
     <div class="setting-group">
       <label class="setting-label" for="vaultName">
         <svg class="label-icon" viewBox="0 0 16 16" width="14" height="14">
@@ -26,6 +27,77 @@
       <p class="setting-hint">对应 Obsidian 中打开的 Vault 名称</p>
     </div>
 
+    <div class="section-divider"></div>
+
+    <!-- ===== 文件名设置 ===== -->
+    <div class="section-title">
+      <svg class="label-icon" viewBox="0 0 16 16" width="14" height="14">
+        <path d="M14 4.5V14a2 2 0 01-2 2H4a2 2 0 01-2-2V2a2 2 0 012-2h5.5L14 4.5zM9 4V1H4a1 1 0 00-1 1v12a1 1 0 001 1h8a1 1 0 001-1V5H10a1 1 0 01-1-1z" fill="currentColor"/>
+      </svg>
+      文件名设置
+    </div>
+
+    <!-- 文件名模式选择 -->
+    <div class="setting-group">
+      <label class="setting-label" for="fileNameMode">命名模式</label>
+      <select id="fileNameMode" class="setting-select">
+        <option value="combined">组合模式（分别设置各部分）</option>
+        <option value="template">模板模式（完全自定义）</option>
+      </select>
+    </div>
+
+    <!-- 组合模式设置 -->
+    <div id="combinedSettings">
+      <div class="setting-group">
+        <label class="setting-label" for="timestampFormat">时间戳格式</label>
+        <select id="timestampFormat" class="setting-select">
+          <option value="14">14 位（YYYYMMDDHHmmss）</option>
+          <option value="12">12 位（YYYYMMDDHHmm）— 默认</option>
+          <option value="8">8 位（YYYYMMDD）</option>
+          <option value="none">不使用时间戳</option>
+        </select>
+      </div>
+
+      <div class="setting-group">
+        <label class="setting-label" for="separator">连词符</label>
+        <select id="separator" class="setting-select">
+          <option value="-">横杠（-）— 默认</option>
+          <option value="_">下划线（_）</option>
+          <option value=" ">空格</option>
+          <option value="">无连词符</option>
+        </select>
+      </div>
+
+      <div class="setting-group">
+        <label class="setting-label" for="sourceMode">来源名称</label>
+        <select id="sourceMode" class="setting-select">
+          <option value="default">默认（AI 平台名称 + "对话记录"）</option>
+          <option value="custom">自定义</option>
+        </select>
+      </div>
+
+      <div class="setting-group" id="customSourceGroup" style="display: none;">
+        <input type="text" id="customSource" class="setting-input" placeholder="例如：我的笔记" spellcheck="false">
+        <p class="setting-hint">替换默认的"Gemini对话记录"等来源名称</p>
+      </div>
+    </div>
+
+    <!-- 模板模式设置 -->
+    <div id="templateSettings" style="display: none;">
+      <div class="setting-group">
+        <label class="setting-label" for="fileNameTemplate">文件名模板</label>
+        <input type="text" id="fileNameTemplate" class="setting-input" placeholder="{YYYY}{MM}{DD}{HH}{mm}-{source}对话记录" spellcheck="false">
+        <p class="setting-hint">支持变量：{YYYY} {MM} {DD} {HH} {mm} {ss} {source}</p>
+      </div>
+    </div>
+
+    <!-- 文件名预览 -->
+    <div class="preview-box">
+      <span class="preview-label">预览：</span>
+      <span id="fileNamePreview" class="preview-text">202603240809-Gemini对话记录</span>
+    </div>
+
+    <!-- ===== 保存按钮 ===== -->
     <div class="button-group">
       <button id="saveBtn" class="save-btn">
         <svg viewBox="0 0 16 16" width="14" height="14">
@@ -38,7 +110,7 @@
     <div id="statusMsg" class="status-msg hidden"></div>
 
     <div class="popup-footer">
-      <span class="version-info">v0.0.18</span>
+      <span class="version-info">v0.0.19</span>
     </div>
   </div>
 

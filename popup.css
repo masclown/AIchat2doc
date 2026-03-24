@@ -1,6 +1,6 @@
 /**
  * @fileoverview 弹出设置界面样式
- * @version 0.0.18
+ * @version 0.0.19
  * @author masclown
  * @license GPL-3.0
  * @copyright 2026 unibox
@@ -20,7 +20,7 @@ body {
   font-family: 'Segoe UI', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, sans-serif;
   background: #1a1a2e;
   color: #e0e0e0;
-  min-width: 320px;
+  min-width: 340px;
 }
 
 /* ========== 容器布局 ========== */
@@ -28,7 +28,7 @@ body {
   padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 /* ========== 头部标题 ========== */
@@ -52,20 +52,35 @@ body {
   letter-spacing: 0.5px;
 }
 
+/* ========== 分区标题 ========== */
+.section-divider {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin: 2px 0;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #c4b5fd;
+}
+
 /* ========== 设置项 ========== */
 .setting-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
 .setting-label {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
-  color: #c4b5fd;
+  color: #a5a0c0;
 }
 
 .label-icon {
@@ -73,14 +88,15 @@ body {
   opacity: 0.8;
 }
 
+/* ========== 输入框 ========== */
 .setting-input {
   width: 100%;
-  padding: 10px 12px;
+  padding: 9px 12px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(124, 58, 237, 0.35);
   border-radius: 8px;
   color: #f0f0f0;
-  font-size: 14px;
+  font-size: 13px;
   font-family: inherit;
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
@@ -96,17 +112,78 @@ body {
   background: rgba(255, 255, 255, 0.08);
 }
 
+/* ========== 下拉框 ========== */
+.setting-select {
+  width: 100%;
+  padding: 9px 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(124, 58, 237, 0.35);
+  border-radius: 8px;
+  color: #f0f0f0;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%23a78bfa' fill='none' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.setting-select:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+}
+
+.setting-select option {
+  background: #1e1e3a;
+  color: #f0f0f0;
+}
+
+/* ========== 提示文字 ========== */
 .setting-hint {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.35);
   padding-left: 2px;
+  line-height: 1.4;
+}
+
+/* ========== 预览框 ========== */
+.preview-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(124, 58, 237, 0.08);
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.preview-label {
+  font-size: 11px;
+  color: #a78bfa;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.preview-text {
+  font-size: 12px;
+  color: #d4c8f0;
+  font-family: 'Consolas', 'Monaco', monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* ========== 按钮 ========== */
 .button-group {
   display: flex;
   gap: 8px;
-  padding-top: 4px;
+  padding-top: 2px;
 }
 
 .save-btn {
@@ -169,7 +246,7 @@ body {
 .popup-footer {
   display: flex;
   justify-content: flex-end;
-  padding-top: 8px;
+  padding-top: 6px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 

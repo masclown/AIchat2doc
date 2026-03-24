@@ -1,6 +1,6 @@
 /**
  * @fileoverview 主模块 - 适配多平台
- * @version 0.0.18
+ * @version 0.0.19
  * @author masclown
  * @license GPL-3.0
  * @copyright 2026 unibox
@@ -9,17 +9,25 @@
  * Copyright (C) 2026 masclown
  */
 
-/** 默认 Obsidian 库名称 */
-const DEFAULT_VAULT_NAME = "Obsidian";
+/** 默认设置值 */
+const DEFAULT_SETTINGS = {
+    vaultName: 'Obsidian',
+    fileNameMode: 'combined',
+    timestampFormat: '12',
+    separator: '-',
+    sourceMode: 'default',
+    customSource: '',
+    fileNameTemplate: '{YYYY}{MM}{DD}{HH}{mm}-{source}对话记录'
+};
 
 /**
- * 从 chrome.storage.local 异步读取 Obsidian 库名称
- * @returns {Promise<string>} Vault 名称
+ * 从 chrome.storage.local 异步读取所有设置
+ * @returns {Promise<object>} 设置对象
  */
-function getVaultName() {
+function getSettings() {
     return new Promise((resolve) => {
-        chrome.storage.local.get({ vaultName: DEFAULT_VAULT_NAME }, (result) => {
-            resolve(result.vaultName || DEFAULT_VAULT_NAME);
+        chrome.storage.local.get(DEFAULT_SETTINGS, (result) => {
+            resolve({ ...DEFAULT_SETTINGS, ...result });
         });
     });
 }
@@ -707,11 +715,54 @@ function getMarkdownContent(actionBar) {
     return markdownContent;
 }
 
-function getFormattedFileName() {
+/**
+ * 根据用户设置生成格式化的文件名
+ * 支持组合模式（时间戳 + 来源）和模板模式（自定义变量替换）
+ * @returns {Promise<string>} 格式化后的文件名
+ */
+async function getFormattedFileName() {
+    const settings = await getSettings();
     const now = new Date();
     const pad = (n) => String(n).padStart(2, '0');
     const platformName = getCurrentPlatform() ? getCurrentPlatform().name : 'AI';
-    return `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}-${platformName}对话记录`;
+
+    const vars = {
+        YYYY: String(now.getFullYear()),
+        MM: pad(now.getMonth() + 1),
+        DD: pad(now.getDate()),
+        HH: pad(now.getHours()),
+        mm: pad(now.getMinutes()),
+        ss: pad(now.getSeconds()),
+        source: platformName
+    };
+
+    // 模板模式：使用用户定义的模板进行变量替换
+    if (settings.fileNameMode === 'template') {
+        const template = settings.fileNameTemplate || DEFAULT_SETTINGS.fileNameTemplate;
+        return template.replace(/\{(\w+)\}/g, (_, key) => vars[key] !== undefined ? vars[key] : `{${key}}`);
+    }
+
+    // 组合模式：分别组合时间戳和来源
+    let timestamp = '';
+    switch (settings.timestampFormat) {
+        case '14': timestamp = `${vars.YYYY}${vars.MM}${vars.DD}${vars.HH}${vars.mm}${vars.ss}`; break;
+        case '12': timestamp = `${vars.YYYY}${vars.MM}${vars.DD}${vars.HH}${vars.mm}`; break;
+        case '8':  timestamp = `${vars.YYYY}${vars.MM}${vars.DD}`; break;
+        case 'none': timestamp = ''; break;
+        default:   timestamp = `${vars.YYYY}${vars.MM}${vars.DD}${vars.HH}${vars.mm}`; break;
+    }
+
+    let source = '';
+    if (settings.sourceMode === 'custom' && settings.customSource) {
+        source = settings.customSource;
+    } else {
+        source = `${platformName}对话记录`;
+    }
+
+    const sep = settings.separator !== undefined ? settings.separator : '-';
+    if (timestamp && source) return `${timestamp}${sep}${source}`;
+    if (timestamp) return timestamp;
+    return source || '未命名';
 }
 
 async function saveActionHandler(actionBar) {
@@ -723,10 +774,10 @@ async function saveActionHandler(actionBar) {
     }
 }
 
-function downloadActionHandler(actionBar) {
+async function downloadActionHandler(actionBar) {
     const markdownContent = getMarkdownContent(actionBar);
     if (markdownContent) {
-        downloadMarkdown(markdownContent);
+        await downloadMarkdown(markdownContent);
     } else {
         console.error("未能定位到对应的文本内容节点。");
     }
@@ -738,8 +789,9 @@ function downloadActionHandler(actionBar) {
  * - 当 URL 过长时（超过 30000 字符），改用剪贴板传递内容，防止格式丢失
  */
 async function saveToObsidian(content) {
-    const vaultName = await getVaultName();
-    const fileName = getFormattedFileName();
+    const settings = await getSettings();
+    const vaultName = settings.vaultName || DEFAULT_SETTINGS.vaultName;
+    const fileName = await getFormattedFileName();
     const encodedContent = encodeURIComponent(content);
     const fullUrl = `obsidian://new?vault=${vaultName}&name=${encodeURIComponent(fileName)}&content=${encodedContent}`;
 
@@ -768,8 +820,8 @@ async function saveToObsidian(content) {
     }
 }
 
-function downloadMarkdown(content) {
-    const fileName = `${getFormattedFileName()}.md`;
+async function downloadMarkdown(content) {
+    const fileName = `${await getFormattedFileName()}.md`;
     const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
     const url = URL.createObjectURL(blob);
 
