@@ -1,1 +1,0 @@
-AIchat2doc is a productivity extension designed specifically to export AI conversations from supported web platforms (like Google Gemini, DeepSeek, and others) directly into local Markdown files or the Obsidian note-taking application.

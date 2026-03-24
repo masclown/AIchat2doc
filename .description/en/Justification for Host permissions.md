@@ -1,1 +1,0 @@
-Host permissions for specific domains (e.g., https://gemini.google.com/* and other supported AI platforms) are required to inject the content scripts. These scripts are necessary to seamlessly add the 'Download Markdown' and 'Save to Obsidian' buttons into the native UI of these specific AI websites, allowing users to export their chats.
