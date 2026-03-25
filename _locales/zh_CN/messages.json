@@ -68,6 +68,9 @@
   "sourceDefault": {
     "message": "默认（AI 平台名称 + \"对话记录\"）"
   },
+  "sourceTitle": {
+    "message": "对话主题（提取当前对话标题）"
+  },
   "sourceCustom": {
     "message": "自定义"
   },
@@ -83,8 +86,11 @@
   "templatePlaceholder": {
     "message": "{YYYY}{MM}{DD}{HH}{mm}-{source}对话记录"
   },
+  "sampleTitle": {
+    "message": "关于AI的探讨"
+  },
   "templateHint": {
-    "message": "支持变量：{YYYY} {MM} {DD} {HH} {mm} {ss} {source}"
+    "message": "支持变量：{YYYY} {MM} {DD} {HH} {mm} {ss} {source} {title}"
   },
   "previewLabel": {
     "message": "预览："

@@ -68,6 +68,9 @@
   "sourceDefault": {
     "message": "Default (AI platform name + \"Chat Log\")"
   },
+  "sourceTitle": {
+    "message": "Chat Title (extract from current conversation)"
+  },
   "sourceCustom": {
     "message": "Custom"
   },
@@ -83,8 +86,11 @@
   "templatePlaceholder": {
     "message": "{YYYY}{MM}{DD}{HH}{mm}-{source}ChatLog"
   },
+  "sampleTitle": {
+    "message": "Discussion about AI"
+  },
   "templateHint": {
-    "message": "Supported variables: {YYYY} {MM} {DD} {HH} {mm} {ss} {source}"
+    "message": "Supported variables: {YYYY} {MM} {DD} {HH} {mm} {ss} {source} {title}"
   },
   "previewLabel": {
     "message": "Preview:"

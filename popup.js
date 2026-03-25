@@ -1,7 +1,7 @@
 /**
  * @fileoverview 弹出设置界面逻辑 - 加载/保存用户设置（含文件名自定义）
  * 支持 i18n 国际化，自动跟随浏览器语言
- * @version 0.0.20
+ * @version 0.0.21
  * @author masclown
  * @license GPL-3.0
  * @copyright 2026 unibox
@@ -60,7 +60,8 @@ function generatePreview() {
     HH: pad(now.getHours()),
     mm: pad(now.getMinutes()),
     ss: pad(now.getSeconds()),
-    source: 'Gemini'  // 预览用示例平台名
+    source: 'Gemini',  // 预览用示例平台名
+    title: chrome.i18n.getMessage('sampleTitle') || '关于AI的探讨'
   };
 
   const mode = document.getElementById('fileNameMode').value;
@@ -78,7 +79,7 @@ function generatePreview() {
   switch (tsFormat) {
     case '14': timestamp = `${vars.YYYY}${vars.MM}${vars.DD}${vars.HH}${vars.mm}${vars.ss}`; break;
     case '12': timestamp = `${vars.YYYY}${vars.MM}${vars.DD}${vars.HH}${vars.mm}`; break;
-    case '8':  timestamp = `${vars.YYYY}${vars.MM}${vars.DD}`; break;
+    case '8': timestamp = `${vars.YYYY}${vars.MM}${vars.DD}`; break;
     case 'none': timestamp = ''; break;
   }
 
@@ -87,6 +88,8 @@ function generatePreview() {
   let source = '';
   if (sourceMode === 'custom') {
     source = document.getElementById('customSource').value.trim() || chrome.i18n.getMessage('customNamePlaceholder');
+  } else if (sourceMode === 'title') {
+    source = vars.title;
   } else {
     source = `${vars.source}${chrome.i18n.getMessage('chatLog')}`;
   }

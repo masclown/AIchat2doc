@@ -72,6 +72,7 @@
         <label class="setting-label" for="sourceMode" data-i18n="sourceLabel">来源名称</label>
         <select id="sourceMode" class="setting-select">
           <option value="default" data-i18n="sourceDefault">默认（AI 平台名称 + "对话记录"）</option>
+          <option value="title" data-i18n="sourceTitle">对话主题（提取当前对话标题）</option>
           <option value="custom" data-i18n="sourceCustom">自定义</option>
         </select>
       </div>
@@ -87,7 +88,7 @@
       <div class="setting-group">
         <label class="setting-label" for="fileNameTemplate" data-i18n="templateLabel">文件名模板</label>
         <input type="text" id="fileNameTemplate" class="setting-input" data-i18n-placeholder="templatePlaceholder" placeholder="{YYYY}{MM}{DD}{HH}{mm}-{source}对话记录" spellcheck="false">
-        <p class="setting-hint" data-i18n="templateHint">支持变量：{YYYY} {MM} {DD} {HH} {mm} {ss} {source}</p>
+        <p class="setting-hint" data-i18n="templateHint">支持变量：{YYYY} {MM} {DD} {HH} {mm} {ss} {source} {title}</p>
       </div>
     </div>
 

@@ -1,6 +1,6 @@
 /**
  * @fileoverview 主模块 - 适配多平台
- * @version 0.0.20
+ * @version 0.0.21
  * @author masclown
  * @license GPL-3.0
  * @copyright 2026 unibox
@@ -60,6 +60,7 @@ const PLATFORMS = {
     gemini: {
         name: 'Gemini',
         match: () => window.location.hostname.includes('gemini.google.com'),
+        getChatTitle: () => document.querySelector('[data-test-id="conversation-title"]')?.textContent.trim() || document.title.replace(/ - Google Gemini$/, '').trim(),
         getCopyButtons: () => document.querySelectorAll('copy-button'),
         getActionBar: (btn) => btn.parentElement,
         hasInjected: (actionBar) => actionBar.querySelector('[data-test-id="gemini-to-obsidian-btn"]'),
@@ -152,6 +153,10 @@ const PLATFORMS = {
     deepseek: {
         name: 'DeepSeek',
         match: () => window.location.hostname.includes('chat.deepseek.com'),
+        getChatTitle: () => {
+            const el = document.querySelector('.afa34042, .e37a04e4, .e0a1edb7, div[tabindex="0"][style="outline: none;"]');
+            return el ? el.textContent.trim() : document.title.replace(/ - DeepSeek$/, '').trim();
+        },
         getCopyButtons: () => {
             const btns = Array.from(document.querySelectorAll('.ds-icon-button'));
             return btns.filter(btn => {
@@ -268,6 +273,7 @@ const PLATFORMS = {
     kimi: {
         name: 'Kimi',
         match: () => window.location.hostname.includes('kimi.moonshot.cn') || window.location.hostname.includes('kimi.com'),
+        getChatTitle: () => document.querySelector('.chat-header-content h2')?.textContent.trim() || document.title.replace(/ - Kimi$/, '').trim(),
         getCopyButtons: () => {
             const btns = Array.from(document.querySelectorAll('.segment-assistant-actions .icon-button'));
             return btns.filter(btn => {
@@ -352,6 +358,7 @@ const PLATFORMS = {
     doubao: {
         name: 'Doubao',
         match: () => window.location.hostname.includes('doubao.com'),
+        getChatTitle: () => document.querySelector('.group\\/title .truncate')?.textContent.trim() || document.title.replace(/ - 豆包$/, '').trim(),
         getCopyButtons: () => document.querySelectorAll('button[data-testid="message_action_copy"]'),
         getActionBar: (btn) => btn.parentElement,
         hasInjected: (actionBar) => actionBar.querySelector('[data-test-id="doubao-to-obsidian-btn"]'),
@@ -416,6 +423,7 @@ const PLATFORMS = {
     qianwen: {
         name: 'Qianwen',
         match: () => window.location.hostname.includes('qianwen.com') || window.location.hostname.includes('tongyi.aliyun.com'),
+        getChatTitle: () => document.querySelector('.text-title-attachment')?.textContent.trim() || document.title.replace(/ - 通义千问$/, '').trim(),
         getCopyButtons: () => Array.from(document.querySelectorAll('span[data-icon-type="qwpcicon-copy"]')),
         getActionBar: (span) => span.closest('div[class*="leftArea"]') || span.closest('.flex.gap-4') || span.parentElement.parentElement.parentElement,
         hasInjected: (actionBar) => actionBar.querySelector('[data-test-id="qianwen-to-obsidian-btn"]'),
@@ -504,6 +512,7 @@ const PLATFORMS = {
     minimax: {
         name: 'Minimax',
         match: () => window.location.hostname.includes('agent.minimaxi.com'),
+        getChatTitle: () => document.querySelector('span.truncate.flex-1')?.textContent.trim() || document.title.replace(/ - 星野$/, '').trim(),
         getCopyButtons: () => {
             const paths = Array.from(document.querySelectorAll('svg path[d^="M6.34943"]'));
             return paths.map(path => path.closest('.cursor-pointer')).filter(Boolean);
@@ -726,6 +735,9 @@ async function getFormattedFileName() {
     const pad = (n) => String(n).padStart(2, '0');
     const platformName = getCurrentPlatform() ? getCurrentPlatform().name : 'AI';
 
+    const rawTitle = getCurrentPlatform() && getCurrentPlatform().getChatTitle ? getCurrentPlatform().getChatTitle() : '';
+    const chatTitle = rawTitle ? rawTitle.replace(/[\\/:*?"<>|]/g, '_') : platformName;
+
     const vars = {
         YYYY: String(now.getFullYear()),
         MM: pad(now.getMonth() + 1),
@@ -733,7 +745,8 @@ async function getFormattedFileName() {
         HH: pad(now.getHours()),
         mm: pad(now.getMinutes()),
         ss: pad(now.getSeconds()),
-        source: platformName
+        source: platformName,
+        title: chatTitle
     };
 
     // 模板模式：使用用户定义的模板进行变量替换
@@ -747,14 +760,16 @@ async function getFormattedFileName() {
     switch (settings.timestampFormat) {
         case '14': timestamp = `${vars.YYYY}${vars.MM}${vars.DD}${vars.HH}${vars.mm}${vars.ss}`; break;
         case '12': timestamp = `${vars.YYYY}${vars.MM}${vars.DD}${vars.HH}${vars.mm}`; break;
-        case '8':  timestamp = `${vars.YYYY}${vars.MM}${vars.DD}`; break;
+        case '8': timestamp = `${vars.YYYY}${vars.MM}${vars.DD}`; break;
         case 'none': timestamp = ''; break;
-        default:   timestamp = `${vars.YYYY}${vars.MM}${vars.DD}${vars.HH}${vars.mm}`; break;
+        default: timestamp = `${vars.YYYY}${vars.MM}${vars.DD}${vars.HH}${vars.mm}`; break;
     }
 
     let source = '';
     if (settings.sourceMode === 'custom' && settings.customSource) {
-        source = settings.customSource;
+        source = settings.customSource.replace(/\{title\}/g, chatTitle);
+    } else if (settings.sourceMode === 'title') {
+        source = chatTitle;
     } else {
         source = `${platformName}${chrome.i18n.getMessage('chatLog')}`;
     }
