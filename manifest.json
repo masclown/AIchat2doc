@@ -4,7 +4,6 @@
   "version": "0.0.21",
   "default_locale": "zh_CN",
   "permissions": [
-    "activeTab",
     "storage"
   ],
   "action": {
